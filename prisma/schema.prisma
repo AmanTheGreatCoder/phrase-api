@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Status {
+  active
+  pending
+  spam
+  deleted
+}
+
+model Phrase {
+  id           String        @id @default(cuid())
+  phrase       String        @db.Text
+  status       Status        @default(active)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime?     @updatedAt @map("updated_at")
+  deletedAt    DateTime?     @map("deleted_at")
+  translations Translation[]
+
+  @@unique([phrase, deletedAt])
+  @@index([status])
+  @@index([createdAt])
+  @@map("phrases")
+}
+
+model Translation {
+  id        String    @id @default(cuid())
+  phraseId  String    @map("phrase_id")
+  language  String    @db.VarChar(2)
+  text      String    @db.Text
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  phrase Phrase @relation(fields: [phraseId], references: [id], onDelete: Cascade)
+
+  @@unique([phraseId, language])
+  @@index([language])
+  @@map("translations")
+}
