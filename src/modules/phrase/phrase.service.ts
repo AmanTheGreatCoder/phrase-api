@@ -3,14 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Phrase, Prisma, Status, Translation } from '@prisma/client';
-import { CreatePhraseDto } from './dto/create-phrase.dto';
-import { UpdatePhraseDto } from './dto/update-phrase.dto';
 import * as languages from 'language-list';
-import { DeleteTranslationDto } from './dto/delete-translations.dto';
-import { paginate } from 'src/lib/pagination/paginate';
 import { PaginateQueryDto } from 'src/lib/pagination/dto/paginate-query.dto';
+import { paginate } from 'src/lib/pagination/paginate';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePhraseDto } from './dto/create-phrase.dto';
+import { DeleteTranslationDto } from './dto/delete-translations.dto';
+import { UpdatePhraseDto } from './dto/update-phrase.dto';
 
 @Injectable()
 export class PhraseService {
@@ -47,7 +47,7 @@ export class PhraseService {
     const pagination = paginate(dto);
     console.log('pagination', pagination);
 
-    let phraseOrderBy: Prisma.PhraseOrderByWithRelationInput[] = [];
+    const phraseOrderBy: Prisma.PhraseOrderByWithRelationInput[] = [];
     let translationOrderBy: Prisma.TranslationOrderByWithRelationInput = {};
 
     if (Array.isArray(pagination.orderBy)) {
@@ -69,7 +69,7 @@ export class PhraseService {
       JSON.stringify(translationOrderBy, null, 2),
     );
 
-    let whereClause: Prisma.PhraseWhereInput = {
+    const whereClause: Prisma.PhraseWhereInput = {
       deletedAt: null,
     };
 
